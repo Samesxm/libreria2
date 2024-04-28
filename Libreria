@@ -1,0 +1,1145 @@
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Xml.Serialization;
+
+namespace MyLibrary
+{
+    public class ManipuladorCadenas
+    {
+        public string ConcatenarCadenas(string primeraCadena, string segundaCadena)
+        {
+            return $"{primeraCadena} {segundaCadena}";
+        }
+
+        public string[] DividirCadena(string cadenaEntrada, char separador)
+        {
+            return cadenaEntrada.Split(separador);
+        }
+
+        public string ReemplazarSubcadena(string cadenaEntrada, string subcadenaAntigua, string subcadenaNueva)
+        {
+            return cadenaEntrada.Replace(subcadenaAntigua, subcadenaNueva);
+        }
+
+        public string ConvertirAMayusculas(string cadenaEntrada)
+        {
+            return cadenaEntrada.ToUpper();
+        }
+
+        public string ConvertirAMinusculas(string cadenaEntrada)
+        {
+            return cadenaEntrada.ToLower();
+        }
+
+        public char ObtenerCaracterEnPosicion(string cadenaEntrada, int posicion)
+        {
+            if (posicion >= 0 && posicion < cadenaEntrada.Length)
+                return cadenaEntrada[posicion];
+            else
+                throw new ArgumentOutOfRangeException("posicion", "La posición está fuera de rango.");
+        }
+
+        public int BuscarPosicionSubcadena(string cadenaEntrada, string subcadena)
+        {
+            return cadenaEntrada.IndexOf(subcadena);
+        }
+
+        public bool ComienzaConSubcadena(string cadenaEntrada, string subcadena)
+        {
+            return cadenaEntrada.StartsWith(subcadena);
+        }
+
+        public bool TerminaConSubcadena(string cadenaEntrada, string subcadena)
+        {
+            return cadenaEntrada.EndsWith(subcadena);
+        }
+
+        public string EliminarEspaciosEnBlanco(string cadenaEntrada)
+        {
+            return cadenaEntrada.Trim();
+        }
+
+        public string FormatearCadena(string entrada)
+        {
+            return $"El valor es: {entrada}";
+        }
+
+    }
+
+    public class ManejadorArchivos
+    {
+        public void CrearDirectorio(string rutaDirectorio)
+        {
+            if (!Directory.Exists(rutaDirectorio))
+            {
+                Directory.CreateDirectory(rutaDirectorio);
+                Console.WriteLine($"Directorio creado en: {rutaDirectorio}");
+            }
+            else
+            {
+                Console.WriteLine($"El directorio {rutaDirectorio} ya existe.");
+            }
+        }
+
+        public void EliminarDirectorio(string rutaDirectorio)
+        {
+            if (Directory.Exists(rutaDirectorio))
+            {
+                Directory.Delete(rutaDirectorio);
+                Console.WriteLine($"Directorio eliminado: {rutaDirectorio}");
+            }
+            else
+            {
+                Console.WriteLine($"El directorio {rutaDirectorio} no existe.");
+            }
+        }
+
+        public void ListarArchivosEnDirectorio(string rutaDirectorio)
+        {
+            if (Directory.Exists(rutaDirectorio))
+            {
+                string[] archivos = Directory.GetFiles(rutaDirectorio);
+                Console.WriteLine("Archivos en el directorio:");
+                foreach (string archivo in archivos)
+                {
+                    Console.WriteLine(archivo);
+                }
+            }
+            else
+            {
+                Console.WriteLine($"El directorio {rutaDirectorio} no existe.");
+            }
+        }
+
+        public void ListarSubdirectorios(string rutaDirectorio)
+        {
+            if (Directory.Exists(rutaDirectorio))
+            {
+                string[] subdirectorios = Directory.GetDirectories(rutaDirectorio);
+                Console.WriteLine("Subdirectorios en el directorio:");
+                foreach (string subdirectorio in subdirectorios)
+                {
+                    Console.WriteLine(subdirectorio);
+                }
+            }
+            else
+            {
+                Console.WriteLine($"El directorio {rutaDirectorio} no existe.");
+            }
+        }
+
+        public void CopiarArchivo(string rutaOrigen, string rutaDestino)
+        {
+            try
+            {
+                File.Copy(rutaOrigen, rutaDestino);
+                Console.WriteLine($"Archivo copiado de {rutaOrigen} a {rutaDestino}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al copiar el archivo: {ex.Message}");
+            }
+        }
+
+        public void MoverArchivo(string rutaOrigen, string rutaDestino)
+        {
+            try
+            {
+                File.Move(rutaOrigen, rutaDestino);
+                Console.WriteLine($"Archivo movido de {rutaOrigen} a {rutaDestino}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al mover el archivo: {ex.Message}");
+            }
+        }
+
+        public void EliminarArchivo(string rutaArchivo)
+        {
+            try
+            {
+                if (File.Exists(rutaArchivo))
+                {
+                    File.Delete(rutaArchivo);
+                    Console.WriteLine($"Archivo eliminado: {rutaArchivo}");
+                }
+                else
+                {
+                    Console.WriteLine($"El archivo {rutaArchivo} no existe.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al eliminar el archivo: {ex.Message}");
+            }
+        }
+
+        public bool ExisteArchivo(string rutaArchivo)
+        {
+            return File.Exists(rutaArchivo);
+        }
+
+        public bool ExisteDirectorio(string rutaDirectorio)
+        {
+            return Directory.Exists(rutaDirectorio);
+        }
+
+        public string LeerArchivo(string rutaArchivo)
+        {
+            try
+            {
+                if (File.Exists(rutaArchivo))
+                {
+                    return File.ReadAllText(rutaArchivo);
+                }
+                else
+                {
+                    Console.WriteLine($"El archivo {rutaArchivo} no existe.");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al leer el archivo: {ex.Message}");
+                return null;
+            }
+        }
+
+        public void EscribirEnArchivo(string rutaArchivo, string contenido)
+        {
+            try
+            {
+                File.WriteAllText(rutaArchivo, contenido);
+                Console.WriteLine($"Contenido escrito en el archivo: {rutaArchivo}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al escribir en el archivo: {ex.Message}");
+            }
+        }
+    }
+
+    public class ManejadorFechasTiempos
+    {
+        public int CalcularDiferenciaEnDias(DateTime fechaInicio, DateTime fechaFin)
+        {
+            TimeSpan diferencia = fechaFin - fechaInicio;
+            return diferencia.Days;
+        }
+
+        public DateTime SumarDias(DateTime fecha, int dias)
+        {
+            return fecha.AddDays(dias);
+        }
+
+        public DateTime RestarDias(DateTime fecha, int dias)
+        {
+            return fecha.AddDays(-dias);
+        }
+
+        public DateTime SumarHoras(DateTime fecha, int horas)
+        {
+            return fecha.AddHours(horas);
+        }
+
+        public DateTime RestarHoras(DateTime fecha, int horas)
+        {
+            return fecha.AddHours(-horas);
+        }
+
+        public DateTime ObtenerFechaActual()
+        {
+            return DateTime.Now;
+        }
+
+        public string ConvertirFormatoFecha(string fecha, string formatoEntrada, string formatoSalida)
+        {
+            DateTime fechaConvertida;
+
+            if (DateTime.TryParseExact(fecha, formatoEntrada, null, System.Globalization.DateTimeStyles.None, out fechaConvertida))
+            {
+                return fechaConvertida.ToString(formatoSalida);
+            }
+            else
+            {
+                return "Error: Formato de fecha de entrada no válido.";
+            }
+        }
+
+        public bool ValidarFecha(string fecha)
+        {
+            DateTime fechaConvertida;
+
+            if (DateTime.TryParse(fecha, out fechaConvertida))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public string FormatearFecha(DateTime fecha, string formato)
+        {
+            return fecha.ToString(formato);
+        }
+
+        public int ObtenerAño(DateTime fecha)
+        {
+            return fecha.Year;
+        }
+
+        public int ObtenerMes(DateTime fecha)
+        {
+            return fecha.Month;
+        }
+
+        public int ObtenerDia(DateTime fecha)
+        {
+            return fecha.Day;
+        }
+
+        public int ObtenerHora(DateTime fecha)
+        {
+            return fecha.Hour;
+        }
+
+        public int ObtenerMinuto(DateTime fecha)
+        {
+            return fecha.Minute;
+        }
+
+        public int ObtenerSegundo(DateTime fecha)
+        {
+            return fecha.Second;
+        }
+
+        public int CompararFechas(DateTime fecha1, DateTime fecha2)
+        {
+            return DateTime.Compare(fecha1, fecha2);
+        }
+
+        public bool ValidarFormatoFecha(string fecha, string formato)
+        {
+            DateTime fechaConvertida;
+
+            if (DateTime.TryParseExact(fecha, formato, null, System.Globalization.DateTimeStyles.None, out fechaConvertida))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public int CalcularDiasHabiles(DateTime fechaInicio, DateTime fechaFin)
+        {
+            int diasHabiles = 0;
+            TimeSpan diferencia = fechaFin - fechaInicio;
+
+            for (int i = 0; i <= diferencia.Days; i++)
+            {
+                DateTime fechaActual = fechaInicio.AddDays(i);
+
+                if (fechaActual.DayOfWeek != DayOfWeek.Saturday && fechaActual.DayOfWeek != DayOfWeek.Sunday)
+                {
+                    diasHabiles++;
+                }
+            }
+
+            return diasHabiles;
+        }
+    }
+
+    public class Validacion
+    {
+        private List<object> datos = new List<object>();
+
+        public bool ValidarLongitud(string valor, int longitudMinima, int longitudMaxima)
+        {
+            if (valor == null)
+            {
+                return false;
+            }
+
+            int longitud = valor.Length;
+
+            return longitud >= longitudMinima && longitud <= longitudMaxima;
+        }
+
+        public bool ValidarTipoDato(object valor, Type tipoDatoEsperado)
+        {
+            return valor.GetType() == tipoDatoEsperado;
+        }
+
+        public bool ValidarFormato(string valor, string patron)
+        {
+            if (valor == null || patron == null)
+            {
+                return false;
+            }
+
+            Regex regex = new Regex(patron);
+
+            return regex.IsMatch(valor);
+        }
+
+        public bool ValidarRango(int valor, int valorMinimo, int valorMaximo)
+        {
+            return valor >= valorMinimo && valor <= valorMaximo;
+        }
+
+        public bool ValidarIgualdad(object valor1, object valor2)
+        {
+            return object.Equals(valor1, valor2);
+        }
+
+        public bool ValidarUnicidad(object valor)
+        {
+            return !datos.Contains(valor);
+        }
+
+        public void AgregarDato(object valor)
+        {
+            datos.Add(valor);
+        }
+
+        public bool ValidarExistencia(object valor)
+        {
+            return datos.Contains(valor);
+        }
+
+        public bool ValidarExpresionRegular(string valor, string patron)
+        {
+            if (valor == null || patron == null)
+            {
+                return false;
+            }
+
+            Regex regex = new Regex(patron);
+
+            return regex.IsMatch(valor);
+        }
+
+        public bool ValidarEdad(int edad)
+        {
+            return edad >= 18 && edad <= 65;
+        }
+
+        public bool ValidarDivisibilidad(int numero, int divisor)
+        {
+            return numero % divisor == 0;
+        }
+    }
+
+    public class OperacionesMatematicas
+    {
+        public int Suma(int a, int b)
+        {
+            return a + b;
+        }
+
+        public int Resta(int a, int b)
+        {
+            return a - b;
+        }
+
+        public int Multiplicacion(int a, int b)
+        {
+            return a * b;
+        }
+
+        public double Division(double dividendo, double divisor)
+        {
+            if (divisor == 0)
+            {
+                throw new ArgumentException("No se puede dividir por cero.");
+            }
+
+            return dividendo / divisor;
+        }
+
+        public double Potencia(double baseNumero, double exponente)
+        {
+            return Math.Pow(baseNumero, exponente);
+        }
+
+        public double RaizCuadrada(double numero)
+        {
+            if (numero < 0)
+            {
+                throw new ArgumentException("No se puede calcular la raíz cuadrada de un número negativo.");
+            }
+
+            return Math.Sqrt(numero);
+        }
+
+        public int ValorAbsoluto(int numero)
+        {
+            return Math.Abs(numero);
+        }
+
+        public double ValorAbsoluto(double numero)
+        {
+            return Math.Abs(numero);
+        }
+
+        public double Redondeo(double numero)
+        {
+            return Math.Round(numero);
+        }
+
+        public double Redondeo(double numero, int decimales)
+        {
+            return Math.Round(numero, decimales);
+        }
+
+        public int Maximo(int a, int b)
+        {
+            return Math.Max(a, b);
+        }
+
+        public double Maximo(double a, double b)
+        {
+            return Math.Max(a, b);
+        }
+
+        public int Minimo(int a, int b)
+        {
+            return Math.Min(a, b);
+        }
+
+        public double Minimo(double a, double b)
+        {
+            return Math.Min(a, b);
+        }
+    }
+
+    public class GeneradorAleatorio
+    {
+        private Random generador = new Random();
+
+        public int GenerarEnteroAleatorio(int minimo, int maximo)
+        {
+            return generador.Next(minimo, maximo + 1);
+        }
+
+        public double GenerarPuntoFlotanteAleatorio(double minimo, double maximo)
+        {
+            return minimo + (generador.NextDouble() * (maximo - minimo));
+        }
+
+        public double GenerarNormal(double media, double desviacion)
+        {
+            double u1 = 1.0 - generador.NextDouble();
+            double u2 = 1.0 - generador.NextDouble();
+            double z = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2);
+
+            return media + desviacion * z;
+        }
+
+        public double GenerarUniforme(double minimo, double maximo)
+        {
+            return minimo + (maximo - minimo) * generador.NextDouble();
+        }
+
+        public T SeleccionarAleatorio<T>(List<T> lista)
+        {
+            if (lista == null || lista.Count == 0)
+            {
+                throw new ArgumentException("La lista no puede estar vacía.");
+            }
+
+            int indiceAleatorio = generador.Next(0, lista.Count);
+            return lista[indiceAleatorio];
+        }
+
+        public void Barajar<T>(List<T> lista)
+        {
+            int n = lista.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = generador.Next(n + 1);
+                T valor = lista[k];
+                lista[k] = lista[n];
+                lista[n] = valor;
+            }
+        }
+
+        public string GenerarCadenaAleatoria(int longitud, string conjuntoCaracteres)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < longitud; i++)
+            {
+                int indiceAleatorio = generador.Next(0, conjuntoCaracteres.Length);
+                sb.Append(conjuntoCaracteres[indiceAleatorio]);
+            }
+            return sb.ToString();
+        }
+
+        public DateTime GenerarFechaAleatoria(DateTime fechaInicio, DateTime fechaFin)
+        {
+            int rangoTotalDias = (int)(fechaFin - fechaInicio).TotalDays;
+            int diasAleatorios = generador.Next(rangoTotalDias);
+            return fechaInicio.AddDays(diasAleatorios);
+        }
+
+        public (double latitud, double longitud) GenerarCoordenadasAleatorias(double minLatitud, double maxLatitud, double minLongitud, double maxLongitud)
+        {
+            double latitudAleatoria = minLatitud + (maxLatitud - minLatitud) * generador.NextDouble();
+            double longitudAleatoria = minLongitud + (maxLongitud - minLongitud) * generador.NextDouble();
+            return (latitudAleatoria, longitudAleatoria);
+        }
+    }
+
+    public class Encriptador
+    {
+        // Método para encriptar datos utilizando AES.
+        public string Encriptar(string textoPlano, string clave)
+        {
+            byte[] datosEncriptados;
+            using (Aes aesAlg = Aes.Create())
+            {
+                aesAlg.Key = Encoding.UTF8.GetBytes(clave);
+                aesAlg.IV = new byte[16]; // Vector de inicialización (IV) de longitud 16
+
+                ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
+
+                using (MemoryStream msEncrypt = new MemoryStream())
+                {
+                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                    {
+                        using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
+                        {
+                            swEncrypt.Write(textoPlano);
+                        }
+                    }
+                    datosEncriptados = msEncrypt.ToArray();
+                }
+            }
+            return Convert.ToBase64String(datosEncriptados);
+        }
+
+        // Método para desencriptar datos utilizando AES.
+        public string Desencriptar(string textoEncriptado, string clave)
+        {
+            byte[] datosEncriptados = Convert.FromBase64String(textoEncriptado);
+            string textoPlano = null;
+
+            using (Aes aesAlg = Aes.Create())
+            {
+                aesAlg.Key = Encoding.UTF8.GetBytes(clave);
+                aesAlg.IV = new byte[16]; // Vector de inicialización (IV) de longitud 16
+
+                ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
+
+                using (MemoryStream msDecrypt = new MemoryStream(datosEncriptados))
+                {
+                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                    {
+                        using (StreamReader srDecrypt = new StreamReader(csDecrypt))
+                        {
+                            textoPlano = srDecrypt.ReadToEnd();
+                        }
+                    }
+                }
+            }
+            return textoPlano;
+        }
+
+        // Método para encriptar datos utilizando RSA.
+        public byte[] Encriptar(byte[] datos, RSAParameters clavePublica)
+        {
+            using (RSA rsa = RSA.Create())
+            {
+                rsa.ImportParameters(clavePublica);
+                return rsa.Encrypt(datos, RSAEncryptionPadding.Pkcs1);
+            }
+        }
+
+        // Método para desencriptar datos utilizando RSA.
+        public byte[] Desencriptar(byte[] datosEncriptados, RSAParameters clavePrivada)
+        {
+            using (RSA rsa = RSA.Create())
+            {
+                rsa.ImportParameters(clavePrivada);
+                return rsa.Decrypt(datosEncriptados, RSAEncryptionPadding.Pkcs1);
+            }
+        }
+
+        // Método para calcular el hash MD5 de una cadena.
+        public string CalcularHashMD5(string texto)
+        {
+            using (MD5 md5 = MD5.Create())
+            {
+                byte[] bytes = md5.ComputeHash(Encoding.UTF8.GetBytes(texto));
+                StringBuilder sb = new StringBuilder();
+                foreach (byte b in bytes)
+                {
+                    sb.Append(b.ToString("x2"));
+                }
+                return sb.ToString();
+            }
+        }
+
+        // Método para calcular el hash SHA-1 de una cadena.
+        public string CalcularHashSHA1(string texto)
+        {
+            using (SHA1 sha1 = SHA1.Create())
+            {
+                byte[] bytes = sha1.ComputeHash(Encoding.UTF8.GetBytes(texto));
+                StringBuilder sb = new StringBuilder();
+                foreach (byte b in bytes)
+                {
+                    sb.Append(b.ToString("x2"));
+                }
+                return sb.ToString();
+            }
+        }
+
+        // Método para calcular el hash SHA-256 de una cadena.
+        public string CalcularHashSHA256(string texto)
+        {
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(texto));
+                StringBuilder sb = new StringBuilder();
+                foreach (byte b in bytes)
+                {
+                    sb.Append(b.ToString("x2"));
+                }
+                return sb.ToString();
+            }
+        }
+
+        // Método para calcular el hash SHA-512 de una cadena.
+        public string CalcularHashSHA512(string texto)
+        {
+            using (SHA512 sha512 = SHA512.Create())
+            {
+                byte[] bytes = sha512.ComputeHash(Encoding.UTF8.GetBytes(texto));
+                StringBuilder sb = new StringBuilder();
+                foreach (byte b in bytes)
+                {
+                    sb.Append(b.ToString("x2"));
+                }
+                return sb.ToString();
+            }
+        }
+
+        // Método para codificar una cadena en Base64.
+        public string CodificarBase64(string texto)
+        {
+            byte[] bytes = Encoding.UTF8.GetBytes(texto);
+            return Convert.ToBase64String(bytes);
+        }
+
+        // Método para decodificar una cadena codificada en Base64.
+        public string DecodificarBase64(string textoCodificado)
+        {
+            byte[] bytes = Convert.FromBase64String(textoCodificado);
+            return Encoding.UTF8.GetString(bytes);
+        }
+
+        // Método para generar una clave aleatoria.
+        public byte[] GenerarClaveAleatoria(int longitud)
+        {
+            byte[] clave = new byte[longitud];
+            using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(clave);
+            }
+            return clave;
+        }
+
+        // Método para validar la firma digital utilizando RSA.
+        public bool ValidarFirmaDigital(byte[] mensaje, byte[] firmaDigital, RSAParameters clavePublica)
+        {
+            using (RSA rsa = RSA.Create())
+            {
+                rsa.ImportParameters(clavePublica);
+                return rsa.VerifyData(mensaje, firmaDigital, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+            }
+        }
+    }
+
+    public class Conversor
+    {
+        // Método para convertir una cadena a un entero.
+        public int ConvertirCadenaAEntero(string cadena)
+        {
+            int resultado;
+            if (int.TryParse(cadena, out resultado))
+            {
+                return resultado;
+            }
+            else
+            {
+                throw new ArgumentException("La cadena no es un número entero válido.");
+            }
+        }
+
+        // Método para convertir una cadena a un valor de punto flotante.
+        public float ConvertirCadenaAFlotante(string cadena)
+        {
+            float resultado;
+            if (float.TryParse(cadena, out resultado))
+            {
+                return resultado;
+            }
+            else
+            {
+                throw new ArgumentException("La cadena no es un número de punto flotante válido.");
+            }
+        }
+
+        // Método para convertir un entero a una cadena.
+        public string ConvertirEnteroACadena(int entero)
+        {
+            return entero.ToString();
+        }
+
+        // Método para convertir un valor de punto flotante a una cadena.
+        public string ConvertirFlotanteACadena(float flotante)
+        {
+            return flotante.ToString();
+        }
+
+        // Método para convertir una cadena a una fecha y hora.
+        public DateTime ConvertirCadenaAFechaHora(string cadena)
+        {
+            DateTime resultado;
+            if (DateTime.TryParse(cadena, out resultado))
+            {
+                return resultado;
+            }
+            else
+            {
+                throw new ArgumentException("La cadena no es una fecha y hora válida.");
+            }
+        }
+
+        // Método para convertir una fecha y hora a una cadena.
+        public string ConvertirFechaHoraACadena(DateTime fechaHora)
+        {
+            return fechaHora.ToString();
+        }
+
+        // Método para convertir una cadena a un valor booleano.
+        public bool ConvertirCadenaABooleano(string cadena)
+        {
+            bool resultado;
+            if (bool.TryParse(cadena, out resultado))
+            {
+                return resultado;
+            }
+            else
+            {
+                throw new ArgumentException("La cadena no es un valor booleano válido.");
+            }
+        }
+
+        // Método para convertir un valor booleano a una cadena.
+        public string ConvertirBooleanoACadena(bool booleano)
+        {
+            return booleano.ToString();
+        }
+
+        // Método para convertir una cadena a un arreglo de bytes.
+        public byte[] ConvertirCadenaAArregloBytes(string cadena)
+        {
+            return Encoding.UTF8.GetBytes(cadena);
+        }
+
+        // Método para convertir un arreglo de bytes a una cadena.
+        public string ConvertirArregloBytesACadena(byte[] arregloBytes)
+        {
+            return Encoding.UTF8.GetString(arregloBytes);
+        }
+    }
+    public static class Manipulaciones
+    {
+        public static void PorCada<T>(this IEnumerable<T> coleccion, Action<T> accion)
+        {
+            foreach (T elemento in coleccion)
+            {
+                accion(elemento);
+            }
+        }
+
+        public static IEnumerable<TResult> Mapear<TSource, TResult>(this IEnumerable<TSource> coleccion, Func<TSource, TResult> funcion)
+        {
+            foreach (var elemento in coleccion)
+            {
+                yield return funcion(elemento);
+            }
+        }
+
+        public static IEnumerable<T> Filtrar<T>(this IEnumerable<T> coleccion, Func<T, bool> condicion)
+        {
+            foreach (var elemento in coleccion)
+            {
+                if (condicion(elemento))
+                {
+                    yield return elemento;
+                }
+            }
+        }
+
+        public static T Reducir<T>(this IEnumerable<T> coleccion, Func<T, T, T> funcion)
+        {
+            if (coleccion == null)
+            {
+                throw new ArgumentNullException(nameof(coleccion));
+            }
+
+            T acumulador = default(T);
+            bool primerElemento = true;
+
+            foreach (var elemento in coleccion)
+            {
+                if (primerElemento)
+                {
+                    acumulador = elemento;
+                    primerElemento = false;
+                }
+                else
+                {
+                    acumulador = funcion(acumulador, elemento);
+                }
+            }
+
+            return acumulador;
+        }
+
+        public static T Encontrar<T>(this IEnumerable<T> coleccion, Func<T, bool> condicion)
+        {
+            foreach (var elemento in coleccion)
+            {
+                if (condicion(elemento))
+                {
+                    return elemento;
+                }
+            }
+            return default(T);
+        }
+
+        public static bool Alguno<T>(this IEnumerable<T> coleccion, Func<T, bool> condicion)
+        {
+            foreach (var elemento in coleccion)
+            {
+                if (condicion(elemento))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static bool Todos<T>(this IEnumerable<T> coleccion, Func<T, bool> condicion)
+        {
+            foreach (var elemento in coleccion)
+            {
+                if (!condicion(elemento))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public static IEnumerable<T> Ordenar<T>(this IEnumerable<T> coleccion, Comparison<T> comparador)
+        {
+            List<T> listaOrdenada = new List<T>(coleccion);
+            listaOrdenada.Sort(comparador);
+            return listaOrdenada;
+        }
+
+        public static IEnumerable<T> Recortar<T>(this IEnumerable<T> coleccion, int inicio, int fin = -1)
+        {
+            if (inicio < 0)
+            {
+                throw new ArgumentException("El índice de inicio no puede ser negativo.");
+            }
+
+            if (fin == -1)
+            {
+                fin = coleccion.Count();
+            }
+
+            if (fin < 0 || fin > coleccion.Count())
+            {
+                throw new ArgumentException("El índice de fin está fuera del rango de la colección.");
+            }
+
+            return coleccion.Skip(inicio).Take(fin - inicio);
+        }
+    }
+
+    public static class AyudanteSerializacion
+    {
+        // Serialización/Deserialización a XML
+        public static void SerializarAXml<T>(T obj, string filePath)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(T));
+            using (StreamWriter writer = new StreamWriter(filePath))
+            {
+                serializer.Serialize(writer, obj);
+            }
+        }
+
+        public static T DeserializarDesdeXml<T>(string filePath)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(T));
+            using (StreamReader reader = new StreamReader(filePath))
+            {
+                return (T)serializer.Deserialize(reader);
+            }
+        }
+
+        // Serialización/Deserialización binaria
+        public static void SerializarABinario<T>(T obj, string filePath)
+        {
+            BinaryFormatter formatter = new BinaryFormatter();
+            using (FileStream stream = new FileStream(filePath, FileMode.Create))
+            {
+                formatter.Serialize(stream, obj);
+            }
+        }
+
+        public static T DeserializarDesdeBinario<T>(string filePath)
+        {
+            BinaryFormatter formatter = new BinaryFormatter();
+            using (FileStream stream = new FileStream(filePath, FileMode.Open))
+            {
+                return (T)formatter.Deserialize(stream);
+            }
+        }
+
+        // Serialización/Deserialización a/desde cadena
+        public static string SerializarAXmlComoCadena<T>(T obj)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(T));
+            using (StringWriter writer = new StringWriter())
+            {
+                serializer.Serialize(writer, obj);
+                return writer.ToString();
+            }
+        }
+
+        public static T DeserializarDesdeCadenaXml<T>(string xml)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(T));
+            using (StringReader reader = new StringReader(xml))
+            {
+                return (T)serializer.Deserialize(reader);
+            }
+        }
+    }
+
+    public static class UtilidadesConversionTipo
+    {
+        public static int ConvertirCadenaAEnteroSeguro(string entrada)
+        {
+            int resultado;
+            if (int.TryParse(entrada, out resultado))
+            {
+                return resultado;
+            }
+            else
+            {
+                throw new ArgumentException("El valor proporcionado no es un número válido.");
+            }
+        }
+
+        public static double ConvertirCadenaADobleSeguro(string entrada)
+        {
+            double resultado;
+            if (double.TryParse(entrada, out resultado))
+            {
+                return resultado;
+            }
+            else
+            {
+                throw new ArgumentException("El valor proporcionado no es un número válido.");
+            }
+        }
+
+        public static string EnteroACadena(int valor)
+        {
+            return valor.ToString();
+        }
+
+        public static string DoubleACadena(double valor)
+        {
+            return valor.ToString();
+        }
+
+        public static DateTime ConvertirCadenaAFechaHoraSeguro(string entrada)
+        {
+            DateTime resultado;
+            if (DateTime.TryParse(entrada, out resultado))
+            {
+                return resultado;
+            }
+            else
+            {
+                throw new ArgumentException("El valor proporcionado no es una fecha y hora válida.");
+            }
+        }
+
+        public static bool ConvertirCadenaABooleanoSeguro(string entrada)
+        {
+            bool resultado;
+            if (bool.TryParse(entrada, out resultado))
+            {
+                return resultado;
+            }
+            else
+            {
+                throw new ArgumentException("El valor proporcionado no es un booleano válido.");
+            }
+        }
+
+        public static string BooleanoACadena(bool valor)
+        {
+            return valor.ToString();
+        }
+
+        public static double EnteroADoble(int valor)
+        {
+            return Convert.ToDouble(valor);
+        }
+
+        public static int ConvertirDobleAEnteroSeguro(double valor)
+        {
+            if (valor >= int.MinValue && valor <= int.MaxValue)
+            {
+                return (int)valor;
+            }
+            else
+            {
+                throw new OverflowException("El valor proporcionado está fuera del rango de un entero.");
+            }
+        }
+
+        public static T ConvertirCadenaAEnumSeguro<T>(string entrada) where T : struct
+        {
+            if (Enum.TryParse(entrada, out T resultado))
+            {
+                return resultado;
+            }
+            else
+            {
+                throw new ArgumentException("El valor proporcionado no es un miembro válido del enum.");
+            }
+        }
+    }
+
+
+}
